@@ -1,7 +1,7 @@
 package main
 
 import (
-	"OneGO/routers"
+	routers "OneGO/urls"
 	"log"
 	"net/http"
 )
