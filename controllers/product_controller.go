@@ -13,7 +13,11 @@ import (
 
 func GetProducts(w http.ResponseWriter, r *http.Request) {
 	products := services.GetProducts()
-	json.NewEncoder(w).Encode(products)
+	if products == nil {
+		http.Error(w, "No products", http.StatusBadRequest)
+	} else {
+		json.NewEncoder(w).Encode(products)
+	}
 }
 
 func GetProduct(w http.ResponseWriter, r *http.Request) {
@@ -25,7 +29,7 @@ func GetProduct(w http.ResponseWriter, r *http.Request) {
 	}
 	product, found := services.GetProductByID(id)
 	if !found {
-		http.NotFound(w, r)
+		http.Error(w, "There is no product with this ID", http.StatusBadRequest)
 		return
 	}
 	json.NewEncoder(w).Encode(product)
@@ -55,7 +59,7 @@ func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	}
 	updatedProduct, found := services.UpdateProduct(id, &product)
 	if !found {
-		http.NotFound(w, r)
+		http.Error(w, "There is no product with this ID", http.StatusBadRequest)
 		return
 	}
 	json.NewEncoder(w).Encode(updatedProduct)
@@ -69,7 +73,7 @@ func DeleteProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if !services.DeleteProduct(id) {
-		http.NotFound(w, r)
+		http.Error(w, "There is no product with this ID", http.StatusBadRequest)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)

@@ -13,7 +13,11 @@ import (
 
 func GetMeasures(w http.ResponseWriter, r *http.Request) {
 	measures := services.GetMeasures()
-	json.NewEncoder(w).Encode(measures)
+	if measures == nil {
+		http.Error(w, "No measures", http.StatusBadRequest)
+	} else {
+		json.NewEncoder(w).Encode(measures)
+	}
 }
 
 func GetMeasure(w http.ResponseWriter, r *http.Request) {
@@ -25,7 +29,7 @@ func GetMeasure(w http.ResponseWriter, r *http.Request) {
 	}
 	measure, found := services.GetMeasureByID(id)
 	if !found {
-		http.NotFound(w, r)
+		http.Error(w, "There is no measure with this ID", http.StatusBadRequest)
 		return
 	}
 	json.NewEncoder(w).Encode(measure)
@@ -55,7 +59,7 @@ func UpdateMeasure(w http.ResponseWriter, r *http.Request) {
 	}
 	updatedMeasure, found := services.UpdateMeasure(id, &measure)
 	if !found {
-		http.NotFound(w, r)
+		http.Error(w, "There is no measure with this ID", http.StatusBadRequest)
 		return
 	}
 	json.NewEncoder(w).Encode(updatedMeasure)
@@ -69,7 +73,7 @@ func DeleteMeasure(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if !services.DeleteMeasure(id) {
-		http.NotFound(w, r)
+		http.Error(w, "There is no measure with this ID", http.StatusBadRequest)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
