@@ -1,7 +1,7 @@
 package routers
 
 import (
-	controllers "OneGO/views"
+	controllers "OneGO/controllers"
 
 	"github.com/gorilla/mux"
 )

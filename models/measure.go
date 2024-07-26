@@ -1,6 +1,6 @@
 package models
 
 type Measure struct {
-	Id   int    `json:"Id"`
-	Name string `json:"name"`
+	MeasureID int    `json:"measure_id"`
+	Name      string `json:"name"`
 }

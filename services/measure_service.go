@@ -11,7 +11,7 @@ func GetMeasures() []models.Measure {
 
 func GetMeasureByID(id int) (models.Measure, bool) {
 	for _, item := range measures {
-		if item.Id == id {
+		if item.MeasureID == id {
 			return item, true
 		}
 	}
@@ -20,27 +20,27 @@ func GetMeasureByID(id int) (models.Measure, bool) {
 
 func CreateMeasure(measure *models.Measure) {
 	currentMeasureID++
-	measure.Id = currentMeasureID
+	measure.MeasureID = currentMeasureID
 	measures = append(measures, *measure)
 }
 
 func UpdateMeasure(id int, measure *models.Measure) (models.Measure, bool) {
 	for index, item := range measures {
-		if item.Id == id {
-			measures = append(measures[:index], measures[index+1:]...)
-			measure.Id = id
-			measures = append(measures, *measure)
+		if item.MeasureID == id {
+			measures[index] = *measure
+			measure.MeasureID = id
 			return *measure, true
 		}
 	}
 	return models.Measure{}, false
 }
 
-func DeleteMeasure(id int) {
+func DeleteMeasure(id int) bool {
 	for index, item := range measures {
-		if item.Id == id {
+		if item.MeasureID == id {
 			measures = append(measures[:index], measures[index+1:]...)
-			break
+			return true
 		}
 	}
+	return false
 }

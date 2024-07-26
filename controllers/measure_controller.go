@@ -18,7 +18,11 @@ func GetMeasures(w http.ResponseWriter, r *http.Request) {
 
 func GetMeasure(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	id, _ := strconv.Atoi(params["id"])
+	id, err := strconv.Atoi(params["id"])
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
 	measure, found := services.GetMeasureByID(id)
 	if !found {
 		http.NotFound(w, r)
@@ -29,16 +33,26 @@ func GetMeasure(w http.ResponseWriter, r *http.Request) {
 
 func CreateMeasure(w http.ResponseWriter, r *http.Request) {
 	var measure models.Measure
-	_ = json.NewDecoder(r.Body).Decode(&measure)
+	if err := json.NewDecoder(r.Body).Decode(&measure); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
 	services.CreateMeasure(&measure)
 	json.NewEncoder(w).Encode(measure)
 }
 
 func UpdateMeasure(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	id, _ := strconv.Atoi(params["id"])
+	id, err := strconv.Atoi(params["id"])
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
 	var measure models.Measure
-	_ = json.NewDecoder(r.Body).Decode(&measure)
+	if err := json.NewDecoder(r.Body).Decode(&measure); err != nil {
+		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		return
+	}
 	updatedMeasure, found := services.UpdateMeasure(id, &measure)
 	if !found {
 		http.NotFound(w, r)
@@ -49,7 +63,14 @@ func UpdateMeasure(w http.ResponseWriter, r *http.Request) {
 
 func DeleteMeasure(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	id, _ := strconv.Atoi(params["id"])
-	services.DeleteMeasure(id)
+	id, err := strconv.Atoi(params["id"])
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+	if !services.DeleteMeasure(id) {
+		http.NotFound(w, r)
+		return
+	}
 	w.WriteHeader(http.StatusNoContent)
 }

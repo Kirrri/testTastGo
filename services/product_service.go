@@ -27,20 +27,20 @@ func CreateProduct(product *models.Product) {
 func UpdateProduct(id int, product *models.Product) (models.Product, bool) {
 	for index, item := range products {
 		if item.Id == id {
-			products = append(products[:index], products[index+1:]...)
+			products[index] = *product
 			product.Id = id
-			products = append(products, *product)
 			return *product, true
 		}
 	}
 	return models.Product{}, false
 }
 
-func DeleteProduct(id int) {
+func DeleteProduct(id int) bool {
 	for index, item := range products {
 		if item.Id == id {
 			products = append(products[:index], products[index+1:]...)
-			break
+			return true
 		}
 	}
+	return false
 }
