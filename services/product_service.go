@@ -11,7 +11,7 @@ func GetProducts() []models.Product {
 
 func GetProductByID(id int) (models.Product, bool) {
 	for _, item := range products {
-		if item.Id == id {
+		if item.ProductId == id {
 			return item, true
 		}
 	}
@@ -20,15 +20,15 @@ func GetProductByID(id int) (models.Product, bool) {
 
 func CreateProduct(product *models.Product) {
 	currentProductID++
-	product.Id = currentProductID
+	product.ProductId = currentProductID
 	products = append(products, *product)
 }
 
 func UpdateProduct(id int, product *models.Product) (models.Product, bool) {
 	for index, item := range products {
-		if item.Id == id {
+		if item.ProductId == id {
 			products[index] = *product
-			product.Id = id
+			product.ProductId = id
 			return *product, true
 		}
 	}
@@ -37,7 +37,7 @@ func UpdateProduct(id int, product *models.Product) (models.Product, bool) {
 
 func DeleteProduct(id int) bool {
 	for index, item := range products {
-		if item.Id == id {
+		if item.ProductId == id {
 			products = append(products[:index], products[index+1:]...)
 			return true
 		}
